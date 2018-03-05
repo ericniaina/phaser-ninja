@@ -17,6 +17,12 @@ Player = function (game, x, y) {
     // handle mirror flip
     this.anchor.setTo(0.5, 0.5);
 
+
+    game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.body.bounce.y = 0.35;
+    this.body.collideWorldBounds = true;
+    this.body.setSize(363, 458);
+
     //
     // Animations
     //
@@ -107,11 +113,11 @@ Player = function (game, x, y) {
     });
 
     this.sm.transition('jump_idle', 'idle', 'jumping', function () {
-        return (self.upKey.isDown && self.body.onFloor());
+        return (self.upKey.isDown && onFloor());
     });
 
     this.sm.transition('jump_walking', 'walking', 'jumping', function () {
-        return (self.upKey.isDown && self.body.onFloor());
+        return (self.upKey.isDown && onFloor());
     });
 
     this.sm.transition('fall', 'jumping', 'falling', function () {
@@ -127,11 +133,11 @@ Player = function (game, x, y) {
     });
 
     this.sm.transition('glide_stand', 'gliding', 'idle', function () {
-        return (self.body.onFloor());
+        return (onFloor());
     });
 
     this.sm.transition('stand', 'falling', 'idle', function () {
-        return (self.body.onFloor());
+        return (onFloor());
     });
 
     // attacking
@@ -151,6 +157,10 @@ Player = function (game, x, y) {
 
     var max_speed = 250;
     var acceleration = 10;
+
+    var onFloor = function() {
+      return self.body.wasTouching.down || self.body.onFloor();
+    };
 
     var moveRight = function () {
         self.scale.x = Math.abs(self.scale.x);
